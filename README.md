@@ -8,7 +8,7 @@ visual view of the commit stack — with one-click access to the spr commands
 you would otherwise run in a terminal: `update`, `merge`, `sync`, `check`,
 `amend`, and interactive `edit` sessions.
 
-<!-- TODO: demo GIF / screenshot -->
+![Demo: a six-commit stack with no pull requests yet; Update creates the stacked PRs, a commit's detail pane shows its status bits and mergeability, then Check streams its log live](docs/demo.gif)
 
 ## Features
 

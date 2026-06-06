@@ -35,6 +35,12 @@ checksum:
 changelog:
   use: github
 
+release:
+  # release-please creates the GitHub release (with its changelog) before
+  # GoReleaser runs; keep those notes and only attach the artifacts. This is
+  # the default, spelled out because the release flow depends on it.
+  mode: keep-existing
+
 brews:
   - name: spr-web
     repository:

@@ -101,7 +101,7 @@ export function App() {
         open={mergeDialog.open}
         onOpenChange={(open) => setMergeDialog((prev) => ({ ...prev, open }))}
         info={app.info}
-        count={mergeDialog.count}
+        initialCount={mergeDialog.count}
         onConfirm={(count) => {
           setMergeDialog({ open: false })
           void app.runCommand("merge", count !== undefined ? { count } : {})

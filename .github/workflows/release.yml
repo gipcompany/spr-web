@@ -1,8 +1,17 @@
 name: Release
 
 on:
+  # Manual escape hatch: pushing a tag by hand still releases.
   push:
     tags: ["v*"]
+  # Normal path: called by release-please.yml after it tags a release (its
+  # GITHUB_TOKEN-created tag cannot fire the push trigger above).
+  workflow_call:
+    inputs:
+      tag:
+        description: Git tag to release
+        required: true
+        type: string
 
 permissions:
   contents: write
@@ -14,6 +23,7 @@ jobs:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0
+          ref: ${{ inputs.tag || github.ref }}
       - uses: pnpm/action-setup@v4
         with:
           package_json_file: web/package.json

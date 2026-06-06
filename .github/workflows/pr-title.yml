@@ -1,0 +1,22 @@
+name: Lint PR title
+
+# Squash merges turn the PR title into the commit that release-please parses
+# on main, so a non-conventional title silently breaks release automation
+# (see #3). Validate the title up front.
+#
+# pull_request_target (not pull_request): re-runs when the title is edited
+# and is safe for forks because this job never checks out the PR's code.
+on:
+  pull_request_target:
+    types: [opened, reopened, edited]
+
+permissions:
+  pull-requests: read
+
+jobs:
+  lint-pr-title:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: amannn/action-semantic-pull-request@v6
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

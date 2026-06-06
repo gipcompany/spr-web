@@ -1,0 +1,50 @@
+version: 2
+
+project_name: spr-web
+
+# The frontend must exist before go:embed compiles it into the binary.
+before:
+  hooks:
+    - sh -c "cd web && pnpm install --frozen-lockfile && pnpm build"
+
+builds:
+  - id: spr-web
+    main: ./cmd/spr-web
+    binary: spr-web
+    env:
+      - CGO_ENABLED=0
+    goos:
+      - darwin
+      - linux
+    goarch:
+      - amd64
+      - arm64
+    ldflags:
+      - -s -w
+      - -X main.version={{.Version}}
+      - -X main.commit={{.Commit}}
+      - -X main.date={{.Date}}
+
+archives:
+  - formats: [tar.gz]
+    name_template: "{{ .ProjectName }}_{{ .Version }}_{{ .Os }}_{{ .Arch }}"
+
+checksum:
+  name_template: checksums.txt
+
+changelog:
+  use: github
+
+brews:
+  - name: spr-web
+    repository:
+      owner: gipcompany
+      name: homebrew-tap
+      token: "{{ .Env.HOMEBREW_TAP_GITHUB_TOKEN }}"
+    homepage: https://github.com/gipcompany/spr-web
+    description: Local web UI for managing stacked pull requests created with spr
+    license: MIT
+    install: |
+      bin.install "spr-web"
+    test: |
+      system "#{bin}/spr-web", "--version"

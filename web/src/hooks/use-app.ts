@@ -212,7 +212,17 @@ export function useApp(): AppState & AppActions {
     if (rows.length === 0) return null
     const found = rows.find((r) => r.commit.commitId === selectedId)
     if (found) return found
-    return rows[0]
+    // Focus was never set, or its commit left the stack (typically a pull
+    // request that merged and dropped out of the local stack on update). rows
+    // is top-of-stack first, so the oldest row is last: prefer the oldest pull
+    // request still open — that is the next one to act on in a bottom-up merge
+    // flow — then degrade to the oldest commit so the detail pane is never
+    // blank while the stack is non-empty.
+    for (let i = rows.length - 1; i >= 0; i--) {
+      const { pr } = rows[i]
+      if (pr && !pr.merged) return rows[i]
+    }
+    return rows[rows.length - 1]
   }, [rows, selectedId])
 
   const busy = run.state === "running" || refreshing

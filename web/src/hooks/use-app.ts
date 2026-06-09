@@ -210,7 +210,9 @@ export function useApp(): AppState & AppActions {
 
   const selected = React.useMemo(() => {
     if (rows.length === 0) return null
-    return rows.find((r) => r.commit.commitId === selectedId) ?? rows[0]
+    const found = rows.find((r) => r.commit.commitId === selectedId)
+    if (found) return found
+    return rows[0]
   }, [rows, selectedId])
 
   const busy = run.state === "running" || refreshing
